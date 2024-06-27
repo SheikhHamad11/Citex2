@@ -23,23 +23,6 @@ export default function Start() {
   const {colorScheme, toggleColorScheme} = useColorScheme();
   const navigation = useNavigation();
   const listRef = useRef();
-  const onSelectOption = (index, x) => {
-    const tempData = questions;
-    tempData.map((item, ind) => {
-      if (index == ind) {
-        if (item.marked !== -1) {
-          item.marked = -1;
-        } else {
-          item.marked = x;
-        }
-      }
-    });
-    let temp = [];
-    tempData.map(item => {
-      temp.push(item);
-    });
-    setQuestions(temp);
-  };
 
   const reset = () => {
     const tempData = questions;
@@ -53,15 +36,15 @@ export default function Start() {
     setQuestions(temp);
   };
 
-  const getTextScore = () => {
-    let marks = 0;
-    quizes.map(item => {
-      if (item.marked !== -1 && item.options[item.marked] === item.correct) {
-        marks += 5;
-      }
-    });
-    return marks;
-  };
+  // const getTextScore = () => {
+  //   let marks = 0;
+  //   quizes.map(item => {
+  //     if (item.marked !== -1 && item.options[item.marked] === item.correct) {
+  //       marks += 5;
+  //     }
+  //   });
+  //   return marks;
+  // };
 
   return (
     <View
@@ -69,13 +52,13 @@ export default function Start() {
       style={{backgroundColor: '#003644'}}>
       <View>
         <View className="flex flex-row justify-center items-center mx-2 mt-5">
-          <Text className="mt-2 ml-4  font-bold text-black text-xl dark:text-white ">
+          <Text className="mt-2 ml-4  font-bold  text-xl text-white ">
             Question Number {'' + currentIndex + ' / ' + quizes?.length}
           </Text>
         </View>
 
         <View>
-          <FlatList
+          {/* <FlatList
             ref={listRef}
             horizontal
             scrollEnabled={false}
@@ -86,28 +69,18 @@ export default function Start() {
             }}
             data={questions}
             renderItem={({item, index}) => {
-              return (
-                <QuestionItem
-                  data={item}
-                  index={index}
-                  selectedOption={x => {
-                    onSelectOption(index, x);
-                  }}
-                />
-              );
+              return <QuestionItem data={item} index={index} />;
             }}
-          />
-
+          /> */}
+          <QuestionItem data={questions[0]} index={0} />
           <View className="flex justify-center flex-row mt-10">
             {currentIndex > 1 && (
               <TouchableOpacity
                 onPress={() => {
-                  if (currentIndex > 1) {
-                    listRef.current.scrollToIndex({
-                      animated: true,
-                      index: currentIndex - 2,
-                    });
-                  }
+                  listRef.current.scrollToIndex({
+                    animated: true,
+                    index: currentIndex - 2,
+                  });
                 }}
                 className=" text-white justify-center rounded-lg mx-2">
                 <Text className="text-white text-center text-3xl ">{'<'}</Text>

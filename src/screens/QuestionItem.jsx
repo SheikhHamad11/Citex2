@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -22,46 +22,57 @@ export default function QuestionItem({data}) {
   const viewRef3 = useRef();
 
   useEffect(() => {
-    if (viewRef.current) {
-      viewRef.current.measure((x, y, width, height, pageX, pageY) => {
-        const startX = pageX;
-        const startY = pageY;
-        console.log(pageY);
-        const endX = pageX + width;
-        const endY = pageY + height;
-        setMeasure1({startX, startY, endX, endY});
-      });
-    }
-    if (viewRef2.current) {
-      viewRef2.current.measure((x, y, width, height, pageX, pageY) => {
-        const startX = pageX;
-        const startY = pageY;
-        const endX = pageX + width;
-        const endY = pageY + height;
-        setMeasure2({startX, startY, endX, endY});
-      });
-    }
-    if (viewRef3.current) {
-      viewRef3.current.measure((x, y, width, height, pageX, pageY) => {
-        const startX = pageX;
-        const startY = pageY;
-        const endX = pageX + width;
-        const endY = pageY + height;
-        setMeasure3({startX, startY, endX, endY});
-      });
-    }
-  }, []);
+    console.log(measure1);
+    const measureElement = () => {
+      if (viewRef.current && !Object.keys(measure1).length) {
+        console.log(true);
+        viewRef.current.measure((x, y, width, height, pageX, pageY) => {
+          console.log(' viewRef.current.measure', {
+            x,
+            y,
+            width,
+            height,
+            pageX,
+            pageY,
+          });
+          const startX = pageX;
+          const startY = pageY;
+          console.log(pageY);
+          const endX = pageX + width;
+          const endY = pageY + height;
+          console.log({startX, startY, endX, endY});
+          setMeasure1({startX, startY, endX, endY});
+        });
+      }
+      if (viewRef2.current && !Object.keys(measure2).length) {
+        viewRef2.current.measure((x, y, width, height, pageX, pageY) => {
+          const startX = pageX;
+          const startY = pageY;
+          const endX = pageX + width;
+          const endY = pageY + height;
+          setMeasure2({startX, startY, endX, endY});
+        });
+      }
+      if (viewRef3.current && !Object.keys(measure3).length) {
+        viewRef3.current.measure((x, y, width, height, pageX, pageY) => {
+          const startX = pageX;
+          const startY = pageY;
+          const endX = pageX + width;
+          const endY = pageY + height;
+          setMeasure3({startX, startY, endX, endY});
+        });
+      }
+    };
+    const timeoutId = setTimeout(measureElement, 2000);
+
+    return () => clearTimeout(timeoutId);
+  }, [viewRef, viewRef2, viewRef3]);
 
   const handleDrop = (x, y, value) => {
     console.log(value, x, y);
 
     const {startX, startY, endX, endY} = measure1;
-    const {
-      startX: startX2,
-      startY: startY2,
-      endX: endX2,
-      endY: endY2,
-    } = measure2;
+    const {startY: startY2, endX: endX2, endY: endY2} = measure2;
     const {
       startX: startX3,
       startY: startY3,
