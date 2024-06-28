@@ -46,7 +46,7 @@ export default function App() {
           headerRight: () => (
             <View style={{marginEnd: 20}}>
               <TouchableOpacity onPress={() => setModalVisible(true)}>
-                <Icon name="ellipsis-v" size={30} color="#0274B3" />
+                <Icon name="ellipsis-v" size={25} color="black" />
               </TouchableOpacity>
             </View>
           ),

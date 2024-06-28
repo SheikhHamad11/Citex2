@@ -62,6 +62,7 @@ export default function QuestionItem({data}) {
       endX: endX2,
       endY: endY2,
     } = measure2;
+
     const {
       startX: startX3,
       startY: startY3,
@@ -74,22 +75,7 @@ export default function QuestionItem({data}) {
       !(x > startX2 && x < endX2 && y > startY2 && y < endY2) ||
       !(x > startX3 && x < endX3 && y > startY3 && y < endY3)
     ) {
-      let shouldStop = false;
-
-      const updatedBlank = data?.blank?.map(item => {
-        if (shouldStop) return item;
-        if (item.includes('___')) {
-          shouldStop = true;
-        }
-        if (item === '___ ') {
-          shouldStop = true;
-          return value;
-        }
-        return item;
-      });
-
       setDroppedValue(value);
-      console.log(updatedBlank); // This will print the updated array
     }
   };
 
@@ -113,20 +99,22 @@ export default function QuestionItem({data}) {
           zIndex: 100,
         }}>
         {symbols.map(item => (
-          <DragableItem
-            key={item}
-            item={item}
-            value="Drag Me one more time!"
-            measure1={measure1}
-            measure2={measure2}
-            measure3={measure3}
-            onDrop={handleDrop}
-          />
+          <>
+            <DragableItem
+              key={item}
+              item={item}
+              value="Drag Me one more time!"
+              measure1={measure1}
+              measure2={measure2}
+              measure3={measure3}
+              onDrop={handleDrop}
+            />
+          </>
         ))}
-
         <View ref={viewRef} style={styles.dropZone}>
-          <Text style={styles.dropZoneText}>Box 1</Text>
+          <Text style={styles.dropZoneText}>{'Box 1'}</Text>
         </View>
+
         <View ref={viewRef2} style={styles.dropZone}>
           <Text style={styles.dropZoneText}>Box 2</Text>
         </View>
@@ -191,32 +179,6 @@ export const OptionList = ({data}) => {
       {data}
     </Text>
   );
-  // const textfunc = dataparm => {
-  //   if (!dataparm.includes('___')) {
-  //     return (
-  //       <Text
-  //         style={{
-  //           color: 'white',
-  //           marginHorizontal: 10,
-  //           textAlign: 'justify',
-  //           marginTop: 10,
-  //         }}>
-  //         {dataparm}
-  //       </Text>
-  //     );
-  //   } else {
-  //     <Text
-  //       style={{
-  //         color: 'white',
-  //         marginHorizontal: 10,
-  //         textAlign: 'justify',
-  //         marginTop: 10,
-  //       }}>
-  //       {dataparm}
-  //     </Text>;
-  //   }
-  // };
-  // return <Text>{textfunc(data)}</Text>;
 };
 
 const styles = StyleSheet.create({
@@ -236,7 +198,7 @@ const styles = StyleSheet.create({
   },
   dropZoneText: {
     fontSize: 16,
-    color: 'transparent',
+    color: 'white',
   },
   droppedText: {
     fontSize: 20,
