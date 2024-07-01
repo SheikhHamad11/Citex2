@@ -7,6 +7,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import DragableItem from './DragableItem';
+import DragableOptions from './DragableOptions';
 const {width} = Dimensions.get('window');
 // const symbols = ["<", ">", ",", "(", ")", ".", "{", "}", ":", ";", "!"];
 const symbols = ['<', '>', ','];
@@ -72,7 +73,12 @@ export default function QuestionItem({data}) {
     console.log(value, x, y);
 
     const {startX, startY, endX, endY} = measure1;
-    const {startY: startY2, endX: endX2, endY: endY2} = measure2;
+    const {
+      startX: startX2,
+      startY: startY2,
+      endX: endX2,
+      endY: endY2,
+    } = measure2;
     const {
       startX: startX3,
       startY: startY3,
@@ -137,33 +143,20 @@ export default function QuestionItem({data}) {
       <View
         style={{
           flexDirection: 'row',
-          flexWrap: 'wrap',
+          // flexWrap: 'wrap',
           justifyContent: 'center',
           marginTop: 3,
-          width: width,
+          // width: width,
         }}>
         {data.options.map(item => (
-          <TouchableOpacity
-            key={item}
-            style={{
-              elevation: 3,
-              alignSelf: 'center',
-              backgroundColor: '#088DAA',
-              margin: 10,
-              justifyContent: 'center',
-              paddingHorizontal: 15,
-            }}>
-            <Text
-              style={{
-                textAlign: 'center',
-                color: 'white',
-                marginVertical: 1,
-                fontWeight: 'bold',
-                fontSize: 18,
-              }}>
-              {item}
-            </Text>
-          </TouchableOpacity>
+          <DragableOptions
+            item={item}
+            value="Drag Me one more time!"
+            measure1={measure1}
+            measure2={measure2}
+            measure3={measure3}
+            onDrop={handleDrop}
+          />
         ))}
       </View>
       <View

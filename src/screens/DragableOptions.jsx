@@ -1,10 +1,22 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, Animated, PanResponder, StyleSheet, Text} from 'react-native';
-const symbols = ['<', '>', ',', '(', ')', '.', '{', '}', ':', ';', '!'];
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Animated,
+  PanResponder,
+} from 'react-native';
+import React, {useEffect, useRef} from 'react';
 
-const DragableItem = ({value, onDrop, measure1, measure2, measure3, item}) => {
+export default function DragableOptions({
+  value,
+  onDrop,
+  measure1,
+  measure2,
+  measure3,
+  item,
+}) {
   const pan = useRef(new Animated.ValueXY()).current;
-
   const viewRef = useRef();
   const measureRef1 = useRef();
   const measureRef2 = useRef();
@@ -21,20 +33,6 @@ const DragableItem = ({value, onDrop, measure1, measure2, measure3, item}) => {
   useEffect(() => {
     measureRef3.current = measure3;
   }, [measure3]);
-
-  // const updateMeasure = () => {
-  //   if (viewRef.current) {
-  //     viewRef.current.measure((x, y, width, height, pageX, pageY) => {
-  //       const startX = pageX;
-  //       const startY = pageY;
-  //       const endX = pageX + width;
-  //       const endY = pageY + height;
-  //       setMeasure({ startX, startY, endX, endY });
-  //       // console.log({ startX, startY, endX, endY }); // Debugging
-  //     });
-  //   }
-  // };
-
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -87,34 +85,25 @@ const DragableItem = ({value, onDrop, measure1, measure2, measure3, item}) => {
       },
     }),
   ).current;
-
   return (
-    <>
-      <Animated.View
-        ref={viewRef}
-        // onLayout={updateMeasure}
-        {...panResponder.panHandlers}
-        style={[pan.getLayout(), styles.box]}>
-        <Text style={{color: 'white', fontSize: 18, marginHorizontal: 5}}>
-          {item}
-        </Text>
-      </Animated.View>
-    </>
+    <Animated.View
+      ref={viewRef}
+      {...panResponder.panHandlers}
+      style={[pan.getLayout(), styles.box]}>
+      <Text style={{color: 'white', fontSize: 18, marginHorizontal: 5}}>
+        {item}
+      </Text>
+    </Animated.View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   box: {
-    width: 30,
-    height: 30,
+    elevation: 3,
+    alignSelf: 'center',
+    backgroundColor: '#088DAA',
+    margin: 10,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FE5200',
-  },
-  text: {
-    color: 'white',
-    fontSize: 18,
+    padding: 6,
   },
 });
-
-export default DragableItem;
