@@ -1,4 +1,4 @@
-import {useRef, useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 
 const useMeasure = count => {
   const refs = useRef([...Array(count)].map(() => React.createRef()));
@@ -9,6 +9,7 @@ const useMeasure = count => {
       refs.current.forEach((ref, index) => {
         if (ref.current) {
           ref.current.measure((x, y, width, height, pageX, pageY) => {
+            console.log({x, y, width, height, pageX, pageY});
             const startX = pageX;
             const startY = pageY;
             console.log(pageY);
@@ -26,7 +27,7 @@ const useMeasure = count => {
     };
 
     // Measure the elements after a short delay to ensure they are fully rendered
-    const timeoutId = setTimeout(measureElements, 0);
+    const timeoutId = setTimeout(measureElements, 2000);
 
     return () => clearTimeout(timeoutId);
   }, [refs.current]);

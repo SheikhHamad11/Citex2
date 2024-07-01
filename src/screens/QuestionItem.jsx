@@ -7,92 +7,36 @@ import {
   StyleSheet,
 } from 'react-native';
 import DragableItem from './DragableItem';
-import DragableOptions from './DragableOptions';
+import useMeasure from '../components/useMeasurment';
 const {width} = Dimensions.get('window');
-// const symbols = ["<", ">", ",", "(", ")", ".", "{", "}", ":", ";", "!"];
-const symbols = ['<', '>', ','];
+const symbols = ['<', '>', ',', '(', ')', '.', '{', '}', ':', ';', '!'];
 
 export default function QuestionItem({data}) {
   const [droppedValue, setDroppedValue] = useState(null);
-  const [measure1, setMeasure1] = useState({});
-  const [measure2, setMeasure2] = useState({});
-  const [measure3, setMeasure3] = useState({});
-
-  const viewRef = useRef();
-  const viewRef2 = useRef();
-  const viewRef3 = useRef();
-
-  useEffect(() => {
-    console.log(measure1);
-    const measureElement = () => {
-      if (viewRef.current && !Object.keys(measure1).length) {
-        console.log(true);
-        viewRef.current.measure((x, y, width, height, pageX, pageY) => {
-          console.log(' viewRef.current.measure', {
-            x,
-            y,
-            width,
-            height,
-            pageX,
-            pageY,
-          });
-          const startX = pageX;
-          const startY = pageY;
-          console.log(pageY);
-          const endX = pageX + width;
-          const endY = pageY + height;
-          console.log({startX, startY, endX, endY});
-          setMeasure1({startX, startY, endX, endY});
-        });
-      }
-      if (viewRef2.current && !Object.keys(measure2).length) {
-        viewRef2.current.measure((x, y, width, height, pageX, pageY) => {
-          const startX = pageX;
-          const startY = pageY;
-          const endX = pageX + width;
-          const endY = pageY + height;
-          setMeasure2({startX, startY, endX, endY});
-        });
-      }
-      if (viewRef3.current && !Object.keys(measure3).length) {
-        viewRef3.current.measure((x, y, width, height, pageX, pageY) => {
-          const startX = pageX;
-          const startY = pageY;
-          const endX = pageX + width;
-          const endY = pageY + height;
-          setMeasure3({startX, startY, endX, endY});
-        });
-      }
-    };
-    const timeoutId = setTimeout(measureElement, 2000);
-
-    return () => clearTimeout(timeoutId);
-  }, [viewRef, viewRef2, viewRef3]);
+  // const counts = data?.blank.filter(item => item.includes('___'));
+  const [viewRefs, Measurments] = useMeasure(data?.blank?.length);
+  const blankIndex = useRef(0);
+  // let DropBoxIndex = 0;
 
   const handleDrop = (x, y, value) => {
     console.log(value, x, y);
 
-    const {startX, startY, endX, endY} = measure1;
-    const {
-      startX: startX2,
-      startY: startY2,
-      endX: endX2,
-      endY: endY2,
-    } = measure2;
-    const {
-      startX: startX3,
-      startY: startY3,
-      endX: endX3,
-      endY: endY3,
-    } = measure3;
+    // const {startX, startY, endX, endY} = measure1;
+    // const {startY: startY2, endX: endX2, endY: endY2} = measure2;
+    // const {
+    //   startX: startX3,
+    //   startY: startY3,
+    //   endX: endX3,
+    //   endY: endY3,
+    // } = measure3;
 
-    if (
-      !(x > startX && x < endX && y > startY && y < endY) ||
-      !(x > startX2 && x < endX2 && y > startY2 && y < endY2) ||
-      !(x > startX3 && x < endX3 && y > startY3 && y < endY3)
-    ) {
-      setDroppedValue(value);
-    }
+    // if (
+    //   !(x > startX && x < endX && y > startY && y < endY) ||
+    //   !(x > startX2 && x < endX2 && y > startY2 && y < endY2) ||
+    //   !(x > startX3 && x < endX3 && y > startY3 && y < endY3)
+    // ) {
+    //   setDroppedValue(value);
+    // }
   };
 
   return (
@@ -118,26 +62,12 @@ export default function QuestionItem({data}) {
           <>
             <DragableItem
               key={item}
-              item={item}
-              value="Drag Me one more time!"
-              measure1={measure1}
-              measure2={measure2}
-              measure3={measure3}
+              value={item}
+              Measurments={Measurments}
               onDrop={handleDrop}
             />
           </>
         ))}
-        <View ref={viewRef} style={styles.dropZone}>
-          <Text style={styles.dropZoneText}>{'Box 1'}</Text>
-        </View>
-
-        <View ref={viewRef2} style={styles.dropZone}>
-          <Text style={styles.dropZoneText}>Box 2</Text>
-        </View>
-
-        <View ref={viewRef3} style={styles.dropZone}>
-          <Text style={styles.dropZoneText}>Box 3</Text>
-        </View>
       </View>
 
       <View
@@ -162,16 +92,40 @@ export default function QuestionItem({data}) {
       <View
         style={[styles.textContainer]}
         className="flex-row justify-center  flex-wrap">
-        {data?.blank?.map((item, index) => (
-          <OptionList data={item} />
-        ))}
+        <Text>
+          {data?.blank?.map((item, index) => (
+            <>
+              {console.log(blankIndex.current)}
+              <OptionList
+                key={index}
+                data={item}
+                viewRefs={viewRefs}
+                index={index}
+              />
+            </>
+          ))}
+        </Text>
       </View>
     </View>
   );
 }
 
-export const OptionList = ({data}) => {
-  return (
+export const OptionList = ({data, viewRefs, index, setIndex}) => {
+  return data.includes('___') ? (
+    <View
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
+        marginHorizontal: 10,
+
+        marginTop: 10,
+        height: 30,
+      }}
+      ref={viewRefs.current[index]}>
+      <Text style={{color: 'white', textAlign: 'justify'}}>{data}</Text>
+    </View>
+  ) : (
     <Text
       style={{
         color: 'white',
@@ -194,7 +148,6 @@ const styles = StyleSheet.create({
   dropZone: {
     borderBottomWidth: 1,
     borderBottomColor: 'white',
-    // backgroundColor: "lightgray",
     marginTop: 50,
     alignSelf: 'center',
     marginHorizontal: 10,
