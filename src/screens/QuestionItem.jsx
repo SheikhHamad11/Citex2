@@ -13,9 +13,9 @@ const symbols = ['<', '>', ',', '(', ')', '.', '{', '}', ':', ';', '!'];
 
 export default function QuestionItem({data}) {
   const [droppedValue, setDroppedValue] = useState(null);
-  const counts = data?.blank.filter(item => item.includes('___'));
-  const [viewRefs, Measurments] = useMeasure(counts.length);
-  const [DragIndex, setDragIndex] = useState(0);
+  // const counts = data?.blank.filter(item => item.includes('___'));
+  const [viewRefs, Measurments] = useMeasure(data?.blank?.length);
+  const blankIndex = useRef(0);
   // let DropBoxIndex = 0;
 
   const handleDrop = (x, y, value) => {
@@ -108,13 +108,12 @@ export default function QuestionItem({data}) {
         <Text>
           {data?.blank?.map((item, index) => (
             <>
-              {console.log(DragIndex)}
+              {console.log(blankIndex.current)}
               <OptionList
                 key={index}
                 data={item}
                 viewRefs={viewRefs}
-                index={DragIndex}
-                setDragIndex={setDragIndex}
+                index={index}
               />
             </>
           ))}
@@ -124,10 +123,7 @@ export default function QuestionItem({data}) {
   );
 }
 
-export const OptionList = ({data, viewRefs, index, setDragIndex}) => {
-  useEffect(() => {
-    data.includes('___') && setDragIndex(prev => prev++);
-  }, [data]);
+export const OptionList = ({data, viewRefs, index, setIndex}) => {
   return data.includes('___') ? (
     <View
       style={{
