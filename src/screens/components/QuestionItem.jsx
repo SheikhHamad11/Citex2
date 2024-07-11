@@ -18,7 +18,6 @@ export default function QuestionItem({data, index, reset}) {
   );
 
   useEffect(() => {
-    console.log('data', data);
     setCount(data?.blank?.length);
   }, [data]);
 
@@ -38,7 +37,6 @@ export default function QuestionItem({data, index, reset}) {
     // Reset symbol position to original position
     setDragPositions(positions => {
       const newPositions = [...positions];
-      console.log('dragindex', dragindex);
       newPositions[dragindex] = {x: 0, y: 0}; // Reset symbol position
       return newPositions;
     });
