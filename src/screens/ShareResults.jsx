@@ -1,4 +1,4 @@
-import {View, Text, TextInput, TouchableOpacity} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, Alert} from 'react-native';
 import React from 'react';
 // import { useRouter } from "expo-router";
 
@@ -30,7 +30,9 @@ export default function ShareResults() {
           <TextInput className="p-3  text-white" />
         </View>
       </View>
-      <TouchableOpacity className="bg-orange-400 p-2 h-10 rounded-md my-6 mx-10">
+      <TouchableOpacity
+        onPress={() => Alert.alert('Success', 'Send Successfully')}
+        className="bg-orange-400 p-2 h-10 rounded-md my-6 mx-10">
         <Text className="text-white text-center font-bold text-base">Send</Text>
       </TouchableOpacity>
     </View>

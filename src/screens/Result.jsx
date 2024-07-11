@@ -1,6 +1,5 @@
 import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
-
 import * as Progress from 'react-native-progress';
 import {useNavigation} from '@react-navigation/native';
 
@@ -55,7 +54,7 @@ export default function Result() {
       <View className="flex flex-row justify-center my-5">
         <TouchableOpacity
           className="bg-orange-400 w-40 p-2 h-10 rounded-md mr-4"
-          onPress={() => navigation.navigate('Start')}>
+          onPress={() => navigation.navigate('Welcome')}>
           <Text className="text-white text-center font-bold text-base">
             Restart
           </Text>

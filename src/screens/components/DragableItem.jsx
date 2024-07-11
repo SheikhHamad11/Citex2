@@ -1,14 +1,23 @@
 import React, {useEffect, useRef} from 'react';
 import {View, Animated, PanResponder, StyleSheet, Text} from 'react-native';
 
-const DragableItem = ({value, onDrop, Measurments}) => {
-  const pan = useRef(new Animated.ValueXY()).current;
+const DragableItem = ({value, onDrop, Measurments, reset, position}) => {
+  const pan = useRef(new Animated.ValueXY(position)).current;
   const viewRef = useRef();
   const DropRef = useRef(Measurments);
   useEffect(() => {
     DropRef.current = Measurments;
-  }, [Measurments]);
+    pan?.current?.setValue({x: 0, y: 0});
+  }, [Measurments, pan.current]);
 
+  useEffect(() => {
+    if (reset) {
+      Animated.spring(pan, {
+        toValue: {x: 0, y: 0},
+        useNativeDriver: false,
+      }).start();
+    }
+  }, [reset, pan]);
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,

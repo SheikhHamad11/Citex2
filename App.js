@@ -9,12 +9,13 @@ import Categories from './src/screens/Categories';
 import Result from './src/screens/Result';
 import SplashScreen from 'react-native-splash-screen';
 import Welcome from './src/screens/Welcome';
-import AboutPage from './src/screens/AboutPage';
-import Blank from './src/screens/Blank';
+import AboutPage from './src/screens/About';
+import Blank from './src/screens/NotFound';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Header from './src/components/Modal';
 import Contact from './src/screens/Contact';
 import ShareResults from './src/screens/ShareResults';
+import NotFound from './src/screens/NotFound';
 export default function App() {
   const [modalVisible, setModalVisible] = useState(false);
   useEffect(() => {
@@ -23,7 +24,6 @@ export default function App() {
     }, 500);
   }, []);
   const Stack = createNativeStackNavigator();
-
   const Title = () => {
     return (
       <Image
@@ -58,16 +58,11 @@ export default function App() {
         />
         <Stack.Screen name="Citation" component={Citation} />
         <Stack.Screen name="AboutPage" component={AboutPage} />
-        <Stack.Screen
-          name="Contact"
-          component={Contact}
-          options={{presentation: 'transparentModal'}}
-        />
-        <Stack.Screen name="Blank" component={Blank} />
+        <Stack.Screen name="Contact" component={Contact} />
+        <Stack.Screen name="NotFound" component={NotFound} />
         <Stack.Screen name="Start" component={Start} />
         <Stack.Screen name="Categories" component={Categories} />
         <Stack.Screen name="Result" component={Result} />
-
         <Stack.Screen name="ShareResults" component={ShareResults} />
       </Stack.Navigator>
       <Header modalVisible={modalVisible} setModalVisible={setModalVisible} />

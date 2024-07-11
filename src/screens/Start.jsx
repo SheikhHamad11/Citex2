@@ -1,55 +1,39 @@
-import {
-  View,
-  Text,
-  FlatList,
-  Dimensions,
-  TouchableOpacity,
-  Modal,
-  Button,
-  Alert,
-} from 'react-native';
-import React, {useRef, useState} from 'react';
+import {View, Text, TouchableOpacity, Modal} from 'react-native';
+import React, {useRef, useState, useEffect} from 'react';
 import {quizes} from '../components/Quiz';
-import QuestionItem from './QuestionItem';
+import QuestionItem from './components/QuestionItem';
 import {useColorScheme} from 'nativewind';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {useNavigation} from '@react-navigation/native';
-const {width, height} = Dimensions.get('window');
 
 export default function Start() {
   const [currentIndex, setCurrentIndex] = useState(1);
   const [questions, setQuestions] = useState(quizes);
   const [modalVisible, setModalVisible] = useState(false);
+  const [resetTrigger, setResetTrigger] = useState(false);
   const {colorScheme, toggleColorScheme} = useColorScheme();
   const navigation = useNavigation();
   const listRef = useRef();
 
-  const reset = () => {
-    const tempData = questions;
-    tempData.map((item, ind) => {
-      item.marked = -1;
-    });
-    let temp = [];
-    tempData.map(item => {
-      temp.push(item);
-    });
-    setQuestions(temp);
-  };
-
-  // const getTextScore = () => {
-  //   let marks = 0;
-  //   quizes.map(item => {
-  //     if (item.marked !== -1 && item.options[item.marked] === item.correct) {
-  //       marks += 5;
-  //     }
-  //   });
-  //   return marks;
+  // const handleReset = () => {
+  //   setResetTrigger(!resetTrigger); // Toggle reset trigger
   // };
 
+  // useEffect(() => {
+  //   // Reset symbols on index change
+  //   setResetTrigger(!resetTrigger);
+  // }, [currentIndex]);
+
+  const handleReset = () => {
+    setResetTrigger(prev => prev + 1); // Increment the counter
+  };
+
+  useEffect(() => {
+    // Reset symbols on index change
+    setResetTrigger(prev => prev + 1);
+  }, [currentIndex]);
   return (
-    <View
-      className="flex-1 dark:bg-white relative"
-      style={{backgroundColor: '#003644'}}>
+    <View className="flex-1 relative bg-[#003644]">
       <View>
         <View className="flex flex-row justify-center items-center mx-2 mt-5">
           <Text className="mt-2 ml-4  font-bold  text-xl text-white ">
@@ -58,44 +42,27 @@ export default function Start() {
         </View>
 
         <View>
-          {/* <FlatList
+          <QuestionItem
             ref={listRef}
-            horizontal
-            scrollEnabled={false}
-            showsHorizontalScrollIndicator={false}
-            onScroll={e => {
-              const x = e.nativeEvent.contentOffset.x / width;
-              setCurrentIndex((x + 1).toFixed(0));
-            }}
-            data={questions}
-            renderItem={({item, index}) => {
-              return <QuestionItem data={item} index={index} />;
-            }}
-          /> */}
-          <QuestionItem data={questions[0]} index={0} />
+            data={quizes[currentIndex]}
+            index={currentIndex}
+            reset={resetTrigger}
+          />
           <View className="flex justify-center flex-row mt-10">
             {currentIndex > 1 && (
               <TouchableOpacity
                 onPress={() => {
-                  listRef.current.scrollToIndex({
-                    animated: true,
-                    index: currentIndex - 2,
-                  });
+                  setCurrentIndex(currentIndex - 1);
                 }}
-                className=" text-white justify-center rounded-lg mx-2">
+                className="mx-2">
                 <Text className="text-white text-center text-3xl ">{'<'}</Text>
               </TouchableOpacity>
             )}
 
             <TouchableOpacity
-              style={{backgroundColor: '#FD5500'}}
-              className="rounded-md  mx-2">
-              <Text
-                className="mr-2 text-white p-2 rounded-sm items-center justify-center text-center"
-                onPress={() => {
-                  reset();
-                  listRef.current.scrollToIndex({animated: true, index: 0});
-                }}>
+              className="rounded-md  mx-2 bg-[#FD5500]"
+              onPress={handleReset}>
+              <Text className="mr-2 text-white p-2 rounded-sm items-center justify-center text-center">
                 Reset
               </Text>
             </TouchableOpacity>
@@ -110,14 +77,11 @@ export default function Start() {
               }}>
               <Text className="mr-2  text-white p-2 rounded-sm">Finish</Text>
             </TouchableOpacity>
-            {currentIndex < 10 && (
+            {currentIndex < questions.length && (
               <TouchableOpacity
                 onPress={() => {
                   if (currentIndex < questions.length) {
-                    listRef.current.scrollToIndex({
-                      animated: true,
-                      index: currentIndex,
-                    });
+                    setCurrentIndex(currentIndex + 1);
                   }
                 }}
                 className="  text-white justify-center rounded-lg mr-3  mx-2">
@@ -151,9 +115,7 @@ export default function Start() {
               The author name end with fullstop . The place name will ends with
               a colon : The edition name will ends with fullstop 2nd ed.
             </Text>
-            {/* <Text className="text-center text-4xl text-green-700 font-extrabold">
-                {getTextScore()}
-              </Text> */}
+
             <TouchableOpacity
               className="bg-gray-700 my-4 p-2 w-20 rounded-sm items-center self-center"
               onPress={() => {
@@ -164,7 +126,43 @@ export default function Start() {
           </View>
         </View>
       </Modal>
-      {/* <StatusBar style={colorScheme == "dark" ? "dark" : "light"} /> */}
     </View>
   );
 }
+
+/* <FlatList
+            ref={listRef}
+            horizontal
+            scrollEnabled={false}
+            showsHorizontalScrollIndicator={false}
+            onScroll={e => {
+              const x = e.nativeEvent.contentOffset.x / width;
+              setCurrentIndex((x + 1).toFixed(0));
+            }}
+            data={questions}
+            renderItem={({item, index}) => {
+              return <QuestionItem data={item} index={index} />;
+            }}
+          /> */
+
+// const reset = () => {
+//   const tempData = questions;
+//   tempData.map((item, ind) => {
+//     item.marked = -1;
+//   });
+//   let temp = [];
+//   tempData.map(item => {
+//     temp.push(item);
+//   });
+//   setQuestions(temp);
+// };
+
+// const getTextScore = () => {
+//   let marks = 0;
+//   quizes.map(item => {
+//     if (item.marked !== -1 && item.options[item.marked] === item.correct) {
+//       marks += 5;
+//     }
+//   });
+//   return marks;
+// };
