@@ -9,6 +9,9 @@ const DragableItem = ({value, onDrop, Measurments, reset, position}) => {
     DropRef.current = Measurments;
     pan?.current?.setValue({x: 0, y: 0});
   }, [Measurments, pan.current]);
+  useEffect(() => {
+    pan?.current?.setValue(position);
+  }, [position]);
 
   useEffect(() => {
     if (reset) {
@@ -32,9 +35,16 @@ const DragableItem = ({value, onDrop, Measurments, reset, position}) => {
             gestureState.moveY > item.startY &&
             gestureState.moveY < item.endY,
         );
-
+        DropRef.current.forEach((element, index) => {
+          console.log(index + 1, 'element:', element);
+          console.log('gestureState.moveX', gestureState.moveX);
+          console.log('gestureState.moveY', gestureState.moveY);
+        });
         if (Drop.length) {
-          onDrop(gestureState.moveX, gestureState.moveY, value);
+          console.log('Drop', Drop);
+          const ind = DropRef.current.indexOf(Drop[0]);
+          console.log('ind', ind);
+          onDrop(gestureState.moveX, gestureState.moveY, value, ind);
         } else {
           Animated.spring(pan, {
             toValue: {x: 0, y: 0},
@@ -59,7 +69,7 @@ const DragableItem = ({value, onDrop, Measurments, reset, position}) => {
 
 const styles = StyleSheet.create({
   box: {
-    width: 30,
+    minWidth: 30,
     height: 30,
     justifyContent: 'center',
     alignItems: 'center',

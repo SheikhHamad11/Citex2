@@ -10,7 +10,7 @@ export default function Start() {
   const [currentIndex, setCurrentIndex] = useState(1);
   const [questions, setQuestions] = useState(quizes);
   const [modalVisible, setModalVisible] = useState(false);
-  const [resetTrigger, setResetTrigger] = useState(false);
+  const [resetTrigger, setResetTrigger] = useState(0);
   const {colorScheme, toggleColorScheme} = useColorScheme();
   const navigation = useNavigation();
   const listRef = useRef();

@@ -3,9 +3,14 @@ import React, {useRef, useState, useEffect} from 'react';
 const useMeasure = (count, currentIndex) => {
   const refs = useRef([...Array(count)].map(() => React.createRef()));
   const [measures, setMeasures] = useState([...Array(count)].map(() => ({})));
-  const [droppedSymbols, setDroppedSymbols] = useState([]); // Add this state
+  const [droppedSymbols, setDroppedSymbols] = useState([]);
   useEffect(() => {
-    // console.log(currentIndex);
+    refs.current = [...Array(count)].map(() => React.createRef());
+    setMeasures([...Array(count)].map(() => ({})));
+  }, [count]);
+  useEffect(() => {
+    console.log(currentIndex);
+    console.log('count', count);
     const measureElements = () => {
       refs.current.forEach((ref, index) => {
         if (ref.current) {

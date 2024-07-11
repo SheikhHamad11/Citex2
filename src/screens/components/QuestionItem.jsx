@@ -13,12 +13,12 @@ export default function QuestionItem({data, index, reset}) {
     count,
     index,
   );
-  const blankIndex = useRef(0);
   const [dragPositions, setDragPositions] = useState(
     symbols.map(() => ({x: 0, y: 0})),
   );
 
   useEffect(() => {
+    console.log('data', data);
     setCount(data?.blank?.length);
   }, [data]);
 
@@ -28,7 +28,7 @@ export default function QuestionItem({data, index, reset}) {
     }
   }, [reset]);
 
-  const handleDrop = (x, y, value, index) => {
+  const handleDrop = (x, y, value, index, dragindex) => {
     setDroppedSymbols(prevDroppedSymbols => {
       const newDroppedSymbols = [...prevDroppedSymbols];
       newDroppedSymbols[index] = value;
@@ -38,18 +38,10 @@ export default function QuestionItem({data, index, reset}) {
     // Reset symbol position to original position
     setDragPositions(positions => {
       const newPositions = [...positions];
-      newPositions[index] = {x: 0, y: 0}; // Reset symbol position
+      console.log('dragindex', dragindex);
+      newPositions[dragindex] = {x: 0, y: 0}; // Reset symbol position
       return newPositions;
     });
-
-    // Add a timeout to delay the reset of the symbol position
-    setTimeout(() => {
-      setDragPositions(positions => {
-        const newPositions = [...positions];
-        newPositions[index] = {x: 0, y: 0}; // Reset symbol position
-        return newPositions;
-      });
-    }, 500); // Adjust the timeout duration as needed
   };
   const resetSymbols = () => {
     setDragPositions(symbols.map(() => ({x: 0, y: 0})));
@@ -65,7 +57,7 @@ export default function QuestionItem({data, index, reset}) {
             key={item}
             value={item}
             Measurments={Measurments}
-            onDrop={(x, y, value) => handleDrop(x, y, value, index)}
+            onDrop={(x, y, value, ind) => handleDrop(x, y, value, ind, index)}
             position={dragPositions[index]}
             reset={reset}
           />
@@ -124,46 +116,27 @@ export const OptionList = ({data, viewRefs, index, droppedSymbols}) => {
           marginRight: 10,
           textAlign: 'justify',
         }}>
-        {symbolValue &&
-        index === droppedSymbols.findIndex(item => item === symbolValue) ? (
-          <View
+        <View
+          style={{
+            borderBottomColor: 'white',
+            borderBottomWidth: 2,
+            paddingBottom: 5,
+            minWidth: 40,
+            justifyContent: 'center',
+            alignItems: 'center',
+            // lineHeight: 30,
+          }}>
+          <Text
             style={{
-              borderBottomColor: 'white',
-              borderBottomWidth: 2,
-              paddingBottom: 5,
-              width: 40,
-              justifyContent: 'center',
-              alignItems: 'center',
-              // lineHeight: 30,
+              fontSize: 20,
+              color: 'white',
             }}>
-            <Text
-              style={{
-                fontSize: 20,
-                color: 'white',
-              }}>
-              {symbolValue}
-            </Text>
-          </View>
-        ) : (
-          <View
-            style={{
-              borderBottomColor: 'white',
-              borderBottomWidth: 2,
-              paddingBottom: 5,
-              width: 40,
-              justifyContent: 'center',
-              alignItems: 'center',
-              // lineHeight: 30,
-            }}>
-            <Text
-              style={{
-                fontSize: 20,
-                color: 'white',
-              }}>
-              {symbolValue}
-            </Text>
-          </View>
-        )}
+            {symbolValue &&
+            index === droppedSymbols.findIndex(item => item === symbolValue)
+              ? symbolValue
+              : ''}
+          </Text>
+        </View>
       </Text>
     </View>
   ) : (
