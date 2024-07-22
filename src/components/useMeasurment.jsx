@@ -1,27 +1,27 @@
 import React, {useRef, useState, useEffect} from 'react';
 
-const useMeasure = (count, currentIndex) => {
+const useMeasure = (count, currentIndex, droppedSymbols) => {
   const refs = useRef([...Array(count)].map(() => React.createRef()));
   const [measures, setMeasures] = useState([...Array(count)].map(() => ({})));
-  const [droppedSymbols, setDroppedSymbols] = useState([]);
+
   useEffect(() => {
     refs.current = [...Array(count)].map(() => React.createRef());
     setMeasures([...Array(count)].map(() => ({})));
   }, [count]);
   useEffect(() => {
-    console.log(currentIndex);
-    console.log('count', count);
+    // console.log(currentIndex);
+    // console.log('count', count);
     const measureElements = () => {
       refs.current.forEach((ref, index) => {
         if (ref.current) {
           ref.current.measure((x, y, width, height, pageX, pageY) => {
-            console.log({x, y, width, height, pageX, pageY});
+            // console.log({x, y, width, height, pageX, pageY});
 
             const startX = pageX;
-            const startY = pageY;
+            const startY = pageY - 20;
             // console.log(pageY);
             const endX = pageX + width;
-            const endY = pageY + height;
+            const endY = pageY + height + 20;
             // console.log({startX, startY, endX, endY});
             setMeasures(prevMeasures => {
               const newMeasures = [...prevMeasures];
@@ -37,9 +37,9 @@ const useMeasure = (count, currentIndex) => {
     const timeoutId = setTimeout(measureElements, 500);
 
     return () => clearTimeout(timeoutId);
-  }, [refs.current, currentIndex]);
+  }, [refs.current, currentIndex, droppedSymbols]);
 
-  return [refs, measures, droppedSymbols, setDroppedSymbols];
+  return [refs, measures];
 };
 
 export default useMeasure;

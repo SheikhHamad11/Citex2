@@ -1,33 +1,70 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {View, Text, Dimensions, StyleSheet} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import DragableItem from './DragableItem';
 import useMeasure from '../../components/useMeasurment';
 import DragableOptions from './DragableOptions';
-
+import {quizes} from '../../components/Quiz';
+import {useNavigation} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import {OptionsList} from './OptionsList';
 const {width} = Dimensions.get('window');
-// const symbols = ['<', '>', ',', '(', ')', '.', '{', '}', ':', ';', '!'];
-const symbols = ['<', '>', ',', '.', '{', '}'];
-export default function QuestionItem({data, index, reset}) {
+const symbols = ['<', '>', ',', '(', ')', '.', '{', '}', ':', ';', '!'];
+// const symbols = ['<', '>', ',' , '(', ')', '{', '}'];
+
+export default function QuestionItem({
+  data,
+  index,
+  setCurrentIndex,
+  totalQuestions,
+}) {
+  const [droppedSymbols, setDroppedSymbols] = useState([]);
   const [count, setCount] = useState(data?.blank?.length);
-  const [viewRefs, Measurments, droppedSymbols, setDroppedSymbols] = useMeasure(
-    count,
-    index,
-  );
+
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [correctAnswers, setCorrectAnswers] = useState({}); // new state to store correct answers
+  const navigation = useNavigation();
+  const [viewRefs, Measurments] = useMeasure(count, index, droppedSymbols);
   const [dragPositions, setDragPositions] = useState(
     symbols.map(() => ({x: 0, y: 0})),
   );
+  const chunkSize = 6;
+  const symbolChunkCount = (symbols.length / chunkSize).toFixed(0);
+  // console.log({symbolChunkCount});
 
   useEffect(() => {
     setCount(data?.blank?.length);
   }, [data]);
 
   useEffect(() => {
-    if (reset) {
-      resetSymbols();
-    }
-  }, [reset]);
+    setCorrectAnswers(prevCorrectAnswers => ({
+      ...prevCorrectAnswers,
+      [index]: false,
+    }));
+  }, [index]);
+
+  const filteredDroppedSymbols = droppedSymbols.filter(symbol => symbol !== '');
+
+  const resetSymbols = () => {
+    setDragPositions(symbols.map(() => ({x: 0, y: 0})));
+    setDroppedSymbols(new Array(count).fill(''));
+    setIsCorrect(null); // Reset dropped symbols to empty strings
+    setCorrectAnswers({});
+  };
+
+  useEffect(() => {
+    setDragPositions(symbols.map(() => ({x: 0, y: 0})));
+    setDroppedSymbols(new Array(count).fill(''));
+    setIsCorrect(null);
+  }, [index]);
 
   const handleDrop = (x, y, value, index, dragindex) => {
+    // alert(value);
     setDroppedSymbols(prevDroppedSymbols => {
       const newDroppedSymbols = [...prevDroppedSymbols];
       newDroppedSymbols[index] = value;
@@ -41,45 +78,71 @@ export default function QuestionItem({data, index, reset}) {
       return newPositions;
     });
   };
-  const resetSymbols = () => {
-    setDragPositions(symbols.map(() => ({x: 0, y: 0})));
-    setDroppedSymbols(new Array(count).fill('')); // Reset dropped symbols to empty strings
+
+  const handleCheck = () => {
+    // console.log('droppedSymbols', filteredDroppedSymbols);
+    if (
+      data?.correct?.every(
+        (symbol, index) => symbol === filteredDroppedSymbols[index],
+      )
+    ) {
+      setIsCorrect(true);
+      setCorrectAnswers(prevCorrectAnswers => ({
+        ...prevCorrectAnswers,
+        [index]: true,
+      }));
+    } else {
+      setIsCorrect(false);
+    }
   };
 
+  const symbolsArray = new Array(2).fill(0);
+  console.log({symbolsArray});
   return (
     <View style={{width: width}}>
       <Text style={styles.quiz}>{data?.question}</Text>
-      <View style={styles.symbols}>
-        {symbols.map((item, index) => (
-          <DragableItem
-            key={item}
-            value={item}
-            Measurments={Measurments}
-            onDrop={(x, y, value, ind) => handleDrop(x, y, value, ind, index)}
-            position={dragPositions[index]}
-            reset={reset}
-          />
-        ))}
-      </View>
+
+      {symbolsArray.map((item, idx) => {
+        return (
+          <View key={idx} style={styles.symbols}>
+            {symbols.map((item, index) => {
+              if (index < (idx + 1) * chunkSize && index >= idx * chunkSize) {
+                return (
+                  <DragableItem
+                    key={index}
+                    value={item}
+                    Measurments={Measurments}
+                    onDrop={(x, y, value, ind) =>
+                      handleDrop(x, y, value, ind, index)
+                    }
+                    position={dragPositions[index]}
+                    reset={resetSymbols}
+                  />
+                );
+              }
+            })}
+          </View>
+        );
+      })}
 
       <View style={styles.options}>
         {data?.options?.map((item, optionIndex) => (
           <DragableOptions
             key={optionIndex}
-            item={item}
-            value="Drag Me one more time!"
+            value={item}
+            pastedOptions={filteredDroppedSymbols}
+            // value="Drag Me one more time!"
             Measurments={Measurments}
-            onDrop={handleDrop}
-            reset={reset}
+            onDrop={(x, y, value, ind) => handleDrop(x, y, value, ind, index)}
+            position={dragPositions[index]}
+            reset={resetSymbols}
           />
         ))}
       </View>
-      <View
-        style={styles.textContainer}
-        className="flex-row justify-center  flex-wrap">
-        <Text>
+      <View className="flex-row justify-center text-center mt-10 mx-5">
+        <Text className="text-center">
           {data?.blank?.map((item, index) => (
-            <OptionList
+            <OptionsList
               key={index}
               data={item}
               viewRefs={viewRefs}
@@ -89,66 +152,83 @@ export default function QuestionItem({data, index, reset}) {
           ))}
         </Text>
       </View>
+      <View className="flex justify-center flex-row mt-10 px-3">
+        {index > 0 && (
+          <TouchableOpacity
+            onPress={() => {
+              setCurrentIndex(index - 1);
+            }}
+            className="mx-2">
+            <Text className="text-white text-center text-3xl ">{'<'}</Text>
+          </TouchableOpacity>
+        )}
+
+        <TouchableOpacity
+          className="rounded-md  mx-2 p-2 bg-[#FD5500]"
+          onPress={resetSymbols}>
+          <Text className="mr-2 text-white rounded-sm text-base  font-bold text-center">
+            Reset
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={handleCheck}
+          className="bg-teal-600 rounded-md items-center mx-2 p-2">
+          <Text className="mr-2  text-white text-base  font-bold">Check</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          className="bg-green-600 rounded-md  mx-2 p-2 items-center"
+          onPress={() => {
+            if (
+              data?.correct?.every(
+                (symbol, index) => symbol === filteredDroppedSymbols[index],
+              )
+            ) {
+              setIsCorrect(true);
+              setCorrectAnswers(prevCorrectAnswers => ({
+                ...prevCorrectAnswers,
+                [index]: true,
+              }));
+              navigation.navigate('Result', {
+                correctAnswers: {...correctAnswers, [index]: true},
+                totalQuestions,
+              });
+            } else {
+              setIsCorrect(false);
+              navigation.navigate('Result', {correctAnswers, totalQuestions});
+            }
+          }}>
+          <Text className="mr-2  text-white text-base font-bold rounded-sm">
+            Finish
+          </Text>
+        </TouchableOpacity>
+
+        {index < quizes.length - 1 && (
+          <TouchableOpacity
+            onPress={() => {
+              setCurrentIndex(index + 1);
+              if (isCorrect === null) {
+                handleCheck();
+              }
+            }}
+            className="  text-white justify-center rounded-lg mr-3  mx-2">
+            <Text className="text-white text-center text-3xl ">{'>'}</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+
+      <View className="mt-5 items-center">
+        {isCorrect === null ? (
+          <Text className="text-2xl"></Text>
+        ) : isCorrect ? (
+          <Icon name="check" color="green" size={25} />
+        ) : (
+          <Icon name="times" color="red" size={25} />
+        )}
+      </View>
     </View>
   );
 }
-
-export const OptionList = ({data, viewRefs, index, droppedSymbols}) => {
-  const symbolValue = droppedSymbols[index];
-
-  return data.includes('___') ? (
-    <View
-      style={{
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-        marginHorizontal: 10,
-        marginTop: 10,
-      }}
-      ref={viewRefs.current[index]}>
-      <Text
-        style={{
-          color: 'white',
-          fontSize: 20,
-          lineHeight: 20,
-          marginRight: 10,
-          textAlign: 'justify',
-        }}>
-        <View
-          style={{
-            borderBottomColor: 'white',
-            borderBottomWidth: 2,
-            paddingBottom: 5,
-            minWidth: 40,
-            justifyContent: 'center',
-            alignItems: 'center',
-            // lineHeight: 30,
-          }}>
-          <Text
-            style={{
-              fontSize: 20,
-              color: 'white',
-            }}>
-            {symbolValue &&
-            index === droppedSymbols.findIndex(item => item === symbolValue)
-              ? symbolValue
-              : ''}
-          </Text>
-        </View>
-      </Text>
-    </View>
-  ) : (
-    <Text
-      style={{
-        color: 'white',
-        marginHorizontal: 10,
-        textAlign: 'justify',
-        marginTop: 10,
-      }}>
-      {data}
-    </Text>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -157,15 +237,16 @@ const styles = StyleSheet.create({
   },
   quiz: {
     marginHorizontal: 10,
-    textAlign: 'justify',
+    textAlign: 'center',
     color: 'white',
-    fontSize: 15,
+    lineHeight: 25,
+    fontSize: 16,
     marginTop: 10,
   },
   symbols: {
     flexDirection: 'row',
+    gap: 0,
     justifyContent: 'center',
-    gap: 15,
     marginVertical: 10,
     zIndex: 100,
   },
@@ -175,7 +256,7 @@ const styles = StyleSheet.create({
     marginTop: 3,
     width: '100%',
   },
-  textContainer: {marginTop: 30},
+
   dropZone: {
     borderBottomWidth: 1,
     borderBottomColor: 'white',

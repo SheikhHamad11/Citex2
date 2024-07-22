@@ -11,55 +11,56 @@ export default function Welcome() {
   const [selectedValue, setSelectedValue] = useState('Harvard');
 
   return (
-    <View style={{backgroundColor: '#003744', flex: 1}}>
-      <View className="mt-16 justify-center items-center self-center">
+    <View style={{backgroundColor: '#003744', paddingBottom: 50, flex: 1}}>
+      <View className="my-24 justify-center items-center self-center">
         <Image
-          source={require('../images/logo.png')}
-          style={{height: 200, width: 200}}
+          source={require('../images/logo1.png')}
+          style={{height: 100, width: 300}}
         />
       </View>
-      <Text className="text-white text-xl text-center font-bold">
+      <Text className="text-white text-xl text-center font-bold mb-5">
         Please select your citation style
       </Text>
       <View className="bg-white w-30 h-12 rounded-lg mt-4 mx-6 justify-center">
         <Picker
-          style={{fontWeight: '900', color: 'black'}}
+          itemStyle={{fontWeight: 'bold'}}
+          style={{color: 'black', fontWeight: 'bold'}}
           selectedValue={selectedValue}
           onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}>
-          <Picker.Item label="HARWARD" value="java" />
+          <Picker.Item label={'HARVARD'} value="java" />
           <Picker.Item label="MLA" value="js" />
           <Picker.Item label="APA" value="python" />
           <Picker.Item label="CHICAGO" value="csharp" />
           <Picker.Item label="MHRA" value="ruby" />
         </Picker>
       </View>
-      <TouchableOpacity
-        className="bg-white w-30 h-12 rounded-lg mt-4 mx-6 flex flex-row items-center "
-        onPress={() => navigation.navigate('Categories')}>
-        <View className="justify-center" style={{backgroundColor: '#0688A3'}}>
-          <Icon
-            name="bars"
-            style={{color: 'white', fontSize: 30, padding: 10}}
-          />
-        </View>
-        <Text className="text-xl font-extrabold text-black   ml-2 justify-center items-center">
-          Reference List
-        </Text>
-      </TouchableOpacity>
 
-      <TouchableOpacity
-        className="bg-white w-30 h-12 rounded-lg mt-4 mx-6 flex flex-row items-center "
-        onPress={() => navigation.navigate('Citation')}>
-        <View className="justify-center" style={{backgroundColor: '#0688A3'}}>
-          <Icon
-            name="download"
-            style={{color: 'white', fontSize: 30, padding: 10}}
-          />
-        </View>
-        <Text className="text-xl text-black font-extrabold  ml-2 justify-center items-center">
-          In-text citation
-        </Text>
-      </TouchableOpacity>
+      <Types
+        onPress={() => navigation.navigate('Categories')}
+        icon="bars"
+        text="Reference List"
+      />
+
+      <Types
+        onPress={() => navigation.navigate('Citation')}
+        icon="download"
+        text="In-text citation"
+      />
     </View>
   );
 }
+
+const Types = ({onPress, icon, text}) => {
+  return (
+    <TouchableOpacity
+      className="bg-white w-30 h-12 rounded-lg mt-4 mx-6 flex flex-row items-center"
+      onPress={onPress}>
+      <View className="justify-center bg-[#0688A3] w-14 items-center">
+        <Icon name={icon} style={{color: 'white', fontSize: 30, padding: 10}} />
+      </View>
+      <Text className="text-xl text-black font-[900]   ml-2 justify-center items-center">
+        {text}
+      </Text>
+    </TouchableOpacity>
+  );
+};

@@ -1,7 +1,7 @@
 import {View, Text, TouchableOpacity, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Home from './src/screens/Welcome';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
 import Start from './src/screens/Start';
 import Citation from './src/screens/Citation';
@@ -23,7 +23,7 @@ export default function App() {
       SplashScreen.hide();
     }, 500);
   }, []);
-  const Stack = createNativeStackNavigator();
+  const Stack = createStackNavigator();
   const Title = () => {
     return (
       <Image
@@ -41,7 +41,9 @@ export default function App() {
           headerShown: true,
           headerTitleAlign: 'center',
           headerTitle: () => <Title />,
-          headerLeft: null,
+          // headerLeft: null,
+          ...TransitionPresets.SlideFromRightIOS, // Smooth transition
+          // headerMode: 'none', // Disable header animation
 
           headerRight: () => (
             <View style={{marginEnd: 20}}>
@@ -62,7 +64,11 @@ export default function App() {
         <Stack.Screen name="NotFound" component={NotFound} />
         <Stack.Screen name="Start" component={Start} />
         <Stack.Screen name="Categories" component={Categories} />
-        <Stack.Screen name="Result" component={Result} />
+        <Stack.Screen
+          name="Result"
+          options={{headerLeft: null}}
+          component={Result}
+        />
         <Stack.Screen name="ShareResults" component={ShareResults} />
       </Stack.Navigator>
       <Header modalVisible={modalVisible} setModalVisible={setModalVisible} />
