@@ -3,33 +3,24 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import NewsPaper from 'react-native-vector-icons/FontAwesome5';
 import {useNavigation} from '@react-navigation/native';
-export default function Categories() {
+export default function Categories({route}) {
+  const {data} = route.params;
+  // console.log('route.params', route);
   const navigation = useNavigation();
+
   return (
     <View className="flex-1" style={{backgroundColor: '#003644'}}>
       <Text className="text-white text-xl text-center font-bold mt-10">
         SELECT CATEGORY
       </Text>
-      <Category
-        onPress={() => navigation.navigate('Start')}
-        icon="book"
-        text="Book"
-      />
-      <Category
-        onPress={() => navigation.navigate('NotFound')}
-        icon="book"
-        text="Edited Book"
-      />
-      <Category
-        onPress={() => navigation.navigate('NotFound')}
-        icon="book"
-        text="Journal Article"
-      />
-      <Category
-        onPress={() => navigation.navigate('NotFound')}
-        icon="globe"
-        text="Web Source"
-      />
+      {Object.entries(data).map(([key, val], index) => (
+        <Category
+          key={key}
+          onPress={() => navigation.navigate('Start', {id: key})}
+          icon={val.icon.replace('fa-', '')}
+          text={val.title}
+        />
+      ))}
     </View>
   );
 }

@@ -13,15 +13,16 @@ import {quizes} from '../../components/Quiz';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {OptionsList} from './OptionsList';
+import Loading from '../../components/Loading';
 const {width} = Dimensions.get('window');
 const symbols = ['<', '>', ',', '(', ')', '.', '{', '}', ':', ';', '!'];
-// const symbols = ['<', '>', ',' , '(', ')', '{', '}'];
 
 export default function QuestionItem({
   data,
   index,
   setCurrentIndex,
   totalQuestions,
+  questionsData,
 }) {
   const [droppedSymbols, setDroppedSymbols] = useState([]);
   const [count, setCount] = useState(data?.blank?.length);
@@ -34,8 +35,6 @@ export default function QuestionItem({
     symbols.map(() => ({x: 0, y: 0})),
   );
   const chunkSize = 6;
-  const symbolChunkCount = (symbols.length / chunkSize).toFixed(0);
-  // console.log({symbolChunkCount});
 
   useEffect(() => {
     setCount(data?.blank?.length);
@@ -82,7 +81,7 @@ export default function QuestionItem({
   const handleCheck = () => {
     // console.log('droppedSymbols', filteredDroppedSymbols);
     if (
-      data?.correct?.every(
+      questionsData?.questions[index]?.answer.every(
         (symbol, index) => symbol === filteredDroppedSymbols[index],
       )
     ) {
@@ -97,11 +96,17 @@ export default function QuestionItem({
   };
 
   const symbolsArray = new Array(2).fill(0);
-  console.log({symbolsArray});
+  // console.log(questionsData?.questions[index]);
+
+  let que = questionsData?.questions[index]?.question_text?.replace(
+    /<|\/?p>/g,
+    '',
+  );
+
   return (
     <View style={{width: width}}>
-      <Text style={styles.quiz}>{data?.question}</Text>
-
+      {/* <Text style={styles.quiz}>{data?.question}</Text> */}
+      <Text style={styles.quiz}>{que}</Text>
       {symbolsArray.map((item, idx) => {
         return (
           <View key={idx} style={styles.symbols}>
@@ -126,7 +131,7 @@ export default function QuestionItem({
       })}
 
       <View style={styles.options}>
-        {data?.options?.map((item, optionIndex) => (
+        {questionsData?.questions[index]?.confusing.map((item, optionIndex) => (
           <DragableOptions
             key={optionIndex}
             value={item}
@@ -141,7 +146,7 @@ export default function QuestionItem({
       </View>
       <View className="flex-row justify-center text-center mt-10 mx-5">
         <Text className="text-center">
-          {data?.blank?.map((item, index) => (
+          {questionsData?.questions[index]?.fixed.map((item, index) => (
             <OptionsList
               key={index}
               data={item}
@@ -180,7 +185,7 @@ export default function QuestionItem({
           className="bg-green-600 rounded-md  mx-2 p-2 items-center"
           onPress={() => {
             if (
-              data?.correct?.every(
+              questionsData?.questions[index]?.answer.every(
                 (symbol, index) => symbol === filteredDroppedSymbols[index],
               )
             ) {

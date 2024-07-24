@@ -3,14 +3,15 @@ import React from 'react';
 
 export const OptionsList = ({data, viewRefs, index, droppedSymbols}) => {
   const symbolValue = droppedSymbols[index];
-
-  return data.includes('___') ? (
+  // console.log('data', data);
+  return data == '' ? (
     <View ref={viewRefs.current[index]}>
       <Text
         style={{
           color: 'white',
           lineHeight: 30,
           marginRight: 15,
+          marginLeft: 5,
         }}>
         <View
           style={{

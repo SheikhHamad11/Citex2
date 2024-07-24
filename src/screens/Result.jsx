@@ -49,7 +49,7 @@ export default function Result({route}) {
       </View>
       <View className="flex flex-row justify-center px-3 my-5 w-[100%]">
         <TouchableOpacity
-          className="bg-orange-400  p-2 w-40  rounded-md mr-4"
+          className="bg-yellow-400  p-2 w-40  rounded-md mr-4"
           onPress={() => navigation.navigate('Welcome')}>
           <Text className="text-black text-center font-bold text-base">
             RESTART

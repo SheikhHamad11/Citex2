@@ -18,6 +18,10 @@ import ShareResults from './src/screens/ShareResults';
 import NotFound from './src/screens/NotFound';
 export default function App() {
   const [modalVisible, setModalVisible] = useState(false);
+
+  // {
+  //   console.log(questionsData?.questions[0]);
+  // }
   useEffect(() => {
     setTimeout(() => {
       SplashScreen.hide();

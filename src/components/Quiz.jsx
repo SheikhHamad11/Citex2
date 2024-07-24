@@ -2,7 +2,7 @@ export const quizes = [
   {
     question:
       "Harry Browne wrote a book titles 'Social Media Marketing'.It is the 4th edition. The book was published by a company called 123Books based in London in 2017.",
-    options: ['2018', '2013'],
+    options: ['12th', 'ed'],
     blank: [
       'Pears,R. and Shields,G. ',
       '___   ',
@@ -87,7 +87,7 @@ export const quizes = [
   {
     question:
       "Johnson published a book titled 'Modern Architecture'. It is the 1st edition. The book was published by Urban Design House in Los Angeles in 2020.",
-    options: ['Modern Arcitecture', '9th'],
+    options: ['Gray', '2013'],
     blank: [
       'Pears,R. and Shields,G. (2018)  ',
       '___   ',

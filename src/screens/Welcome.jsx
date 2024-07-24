@@ -5,17 +5,61 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import {Picker} from '@react-native-picker/picker';
 import {useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
+import Loading from '../components/Loading';
 
 export default function Welcome() {
   const navigation = useNavigation();
   const [selectedValue, setSelectedValue] = useState('Harvard');
+  const [data, setData] = useState();
+  const [loading, setloading] = useState(false);
+  useEffect(() => {
+    getData();
+  }, []);
 
+  // Object.entries(data?.reference_cats).forEach(([key, value]) => {
+  //   console.log(`Key: ${key}, Title: ${value.title}, Icon: ${value.icon}`);
+  // });
+  // console.log('data', data?.citation_cats);
+
+  const getData = async () => {
+    try {
+      setloading(true);
+      var myHeaders = new Headers();
+      myHeaders.append('Content-Type', 'text/plain');
+      var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow',
+      };
+
+      await fetch(
+        'https://citex.org.uk/citex-api.php?method=init_data',
+        requestOptions,
+      )
+        .then(response => response.json())
+        .then(result => {
+          console.log(result);
+          setloading(false);
+
+          setData(result);
+        });
+      setloading(false).catch(error => {
+        console.log('error', error);
+      });
+    } catch (error) {
+      setloading(false);
+      console.log('error', error);
+    }
+  };
+  if (loading) {
+    return <Loading />;
+  }
   return (
     <View style={{backgroundColor: '#003744', paddingBottom: 50, flex: 1}}>
-      <View className="my-24 justify-center items-center self-center">
+      <View className="my-16 justify-center items-center self-center">
         <Image
-          source={require('../images/logo1.png')}
-          style={{height: 100, width: 300}}
+          source={require('../images/logoq.png')}
+          style={{height: 200, width: 400}}
         />
       </View>
       <Text className="text-white text-xl text-center font-bold mb-5">
@@ -36,14 +80,18 @@ export default function Welcome() {
       </View>
 
       <Types
-        onPress={() => navigation.navigate('Categories')}
-        icon="bars"
+        onPress={() =>
+          navigation.navigate('Categories', {data: data?.reference_cats})
+        }
+        icon="list"
         text="Reference List"
       />
 
       <Types
-        onPress={() => navigation.navigate('Citation')}
-        icon="download"
+        onPress={() =>
+          navigation.navigate('Citation', {data: data?.citation_cats})
+        }
+        icon="text-width"
         text="In-text citation"
       />
     </View>

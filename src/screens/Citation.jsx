@@ -3,34 +3,24 @@ import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useNavigation} from '@react-navigation/native';
 
-export default function Citation() {
-  const [modalVisible, setModalVisible] = useState(false);
+export default function Citation({route}) {
+  const {data} = route.params;
+  // console.log('data', data);
   const navigation = useNavigation();
   return (
     <View className="flex-1" style={{backgroundColor: '#003644'}}>
       <Text className="text-white text-xl text-center font-bold mt-10">
         SELECT CATEGORY
       </Text>
-      <Cite
-        onPress={() => navigation.navigate('NotFound')}
-        icon="user"
-        text="Single Author"
-      />
-      <Cite
-        onPress={() => navigation.navigate('NotFound')}
-        icon="users"
-        text="Two Authors"
-      />
-      <Cite
-        onPress={() => navigation.navigate('NotFound')}
-        icon="users"
-        text="Three Authors"
-      />
-      <Cite
-        onPress={() => navigation.navigate('NotFound')}
-        icon="users"
-        text="More Than Three Authors"
-      />
+      {data &&
+        Object.entries(data).map(([key, val], index) => (
+          <Cite
+            key={key}
+            onPress={() => navigation.navigate('Start', {id: key, val})}
+            icon={val.icon.replace('fa-', '')}
+            text={val.title}
+          />
+        ))}
     </View>
   );
 }
