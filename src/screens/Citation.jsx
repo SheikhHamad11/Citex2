@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {useNavigation} from '@react-navigation/native';
 
 export default function Citation({route}) {
-  const {data} = route.params;
+  const {data, selectedValue} = route.params;
   // console.log('data', data);
   const navigation = useNavigation();
   return (
@@ -16,7 +16,9 @@ export default function Citation({route}) {
         Object.entries(data).map(([key, val], index) => (
           <Cite
             key={key}
-            onPress={() => navigation.navigate('Start', {id: key, val})}
+            onPress={() =>
+              navigation.navigate('Start', {id: key, selectedValue})
+            }
             icon={val.icon.replace('fa-', '')}
             text={val.title}
           />

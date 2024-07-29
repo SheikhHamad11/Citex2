@@ -32,12 +32,15 @@ const Header = ({modalVisible, setModalVisible}) => {
           <View style={styles.modalContent}>
             <View style={{marginVertical: 4}}>
               <TouchableOpacity
+                className="items-center justify-center"
                 onPress={() => Linking.openURL('https://citex.org.uk/#')}>
                 <Icon name="globe-asia" size={35} color="#0274B3" />
               </TouchableOpacity>
             </View>
+            <View className="border border-gray-800 px-7"></View>
             <View style={{marginVertical: 4}}>
               <TouchableOpacity
+                className="items-center justify-center"
                 onPress={() => {
                   setModalVisible(false);
                   navigation.navigate('Contact');
@@ -45,8 +48,10 @@ const Header = ({modalVisible, setModalVisible}) => {
                 <Icon name="envelope" size={35} color="#0274B3" />
               </TouchableOpacity>
             </View>
+            <View className="border border-gray-800 px-7"></View>
             <View style={{margin: 4}}>
               <TouchableOpacity
+                className="items-center justify-center"
                 onPress={() => {
                   setModalVisible(false);
                   navigation.navigate('AboutPage');
@@ -56,6 +61,7 @@ const Header = ({modalVisible, setModalVisible}) => {
                 {/* <Icon icon="fa-file-alt" size={35} color="#0274B3" /> */}
               </TouchableOpacity>
             </View>
+
             {/* <Button title="Close Modal" onPress={closeModal} /> */}
           </View>
         </View>
@@ -84,7 +90,7 @@ const styles = StyleSheet.create({
   modalContent: {
     backgroundColor: 'white',
     marginEnd: 10,
-    padding: 10,
+    paddingVertical: 10,
     borderRadius: 10,
     // elevation: 5,
   },

@@ -1,5 +1,6 @@
 import React from 'react';
-import {View, Text, ActivityIndicator} from 'react-native';
+import {View, Text} from 'react-native';
+import {UIActivityIndicator} from 'react-native-indicators';
 
 const Loading = () => {
   return (
@@ -9,17 +10,25 @@ const Loading = () => {
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#003644',
+        opacity: 0.9,
       }}>
-      <ActivityIndicator size="large" color="white" />
-      <Text
+      <View style={{marginBottom: 80}}>
+        <UIActivityIndicator color="white" size={40} />
+      </View>
+      <View
         style={{
-          fontSize: 18,
-          marginTop: 10,
-          color: 'white',
-          textAlign: 'center',
+          position: 'absolute',
+          // alignSelf: 'center',
         }}>
-        Loading...
-      </Text>
+        <Text
+          style={{
+            fontSize: 18,
+            color: 'white',
+            textAlign: 'center',
+          }}>
+          Loading...
+        </Text>
+      </View>
     </View>
   );
 };

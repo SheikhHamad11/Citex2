@@ -1,4 +1,11 @@
-import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
 import React, {useEffect} from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 // import {useRouter} from 'expo-router';
@@ -6,20 +13,16 @@ import {Picker} from '@react-native-picker/picker';
 import {useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Loading from '../components/Loading';
-
+const {height} = Dimensions.get('window');
 export default function Welcome() {
   const navigation = useNavigation();
   const [selectedValue, setSelectedValue] = useState('Harvard');
   const [data, setData] = useState();
+  const [error, seterror] = useState(null);
   const [loading, setloading] = useState(false);
   useEffect(() => {
     getData();
   }, []);
-
-  // Object.entries(data?.reference_cats).forEach(([key, value]) => {
-  //   console.log(`Key: ${key}, Title: ${value.title}, Icon: ${value.icon}`);
-  // });
-  // console.log('data', data?.citation_cats);
 
   const getData = async () => {
     try {
@@ -38,22 +41,27 @@ export default function Welcome() {
       )
         .then(response => response.json())
         .then(result => {
-          console.log(result);
+          // console.log(result);
+          seterror(null);
           setloading(false);
-
           setData(result);
+        })
+        .catch(error => {
+          console.log('error1', error);
+          setloading(false);
+          seterror(error);
         });
-      setloading(false).catch(error => {
-        console.log('error', error);
-      });
-    } catch (error) {
+    } catch (err) {
       setloading(false);
-      console.log('error', error);
+      console.log('error2', err);
+      seterror(err);
     }
   };
-  if (loading) {
-    return <Loading />;
+
+  {
+    error && console.log(error);
   }
+
   return (
     <View style={{backgroundColor: '#003744', paddingBottom: 50, flex: 1}}>
       <View className="my-16 justify-center items-center self-center">
@@ -67,21 +75,24 @@ export default function Welcome() {
       </Text>
       <View className="bg-white w-30 h-12 rounded-lg mt-4 mx-6 justify-center">
         <Picker
-          itemStyle={{fontWeight: 'bold'}}
-          style={{color: 'black', fontWeight: 'bold'}}
+          style={{color: 'black'}}
           selectedValue={selectedValue}
+          dropdownIconColor={'black'}
           onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}>
-          <Picker.Item label={'HARVARD'} value="java" />
-          <Picker.Item label="MLA" value="js" />
-          <Picker.Item label="APA" value="python" />
-          <Picker.Item label="CHICAGO" value="csharp" />
-          <Picker.Item label="MHRA" value="ruby" />
+          <Picker.Item label={'HARVARD'} value="harvard" />
+          <Picker.Item label="MLA" value="mla" />
+          <Picker.Item label="APA" value="apa" />
+          <Picker.Item label="CHICAGO" value="chicago" />
+          <Picker.Item label="MHRA" value="mhra" />
         </Picker>
       </View>
 
       <Types
         onPress={() =>
-          navigation.navigate('Categories', {data: data?.reference_cats})
+          navigation.navigate('Categories', {
+            data: data?.reference_cats,
+            selectedValue,
+          })
         }
         icon="list"
         text="Reference List"
@@ -89,11 +100,47 @@ export default function Welcome() {
 
       <Types
         onPress={() =>
-          navigation.navigate('Citation', {data: data?.citation_cats})
+          navigation.navigate('Citation', {
+            data: data?.citation_cats,
+            selectedValue,
+          })
         }
         icon="text-width"
         text="In-text citation"
       />
+
+      {loading && (
+        <View
+          style={{
+            position: 'absolute',
+            flex: 1,
+            // backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 1,
+            width: '100%',
+            height: height,
+          }}>
+          <Loading />
+        </View>
+      )}
+
+      {error && (
+        <View
+          style={{
+            position: 'absolute',
+            flex: 1,
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            zIndex: 1,
+            width: '100%',
+            height: height,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text className="text-white text-xl text-center ">
+            {/* {'Error : Could not fetch data'} */}
+            {error.toString()}
+          </Text>
+        </View>
+      )}
     </View>
   );
 }

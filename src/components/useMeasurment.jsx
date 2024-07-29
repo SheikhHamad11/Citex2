@@ -21,7 +21,7 @@ const useMeasure = (count, currentIndex, droppedSymbols) => {
             const startY = pageY - 20;
             // console.log(pageY);
             const endX = pageX + width;
-            const endY = pageY + height + 20;
+            const endY = pageY + height + 0;
             // console.log({startX, startY, endX, endY});
             setMeasures(prevMeasures => {
               const newMeasures = [...prevMeasures];

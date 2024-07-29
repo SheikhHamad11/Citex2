@@ -1,6 +1,6 @@
 import {View, Text, TouchableOpacity, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import Home from './src/screens/Welcome';
+import Welcome from './src/screens/Welcome';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
 import Start from './src/screens/Start';
@@ -8,20 +8,15 @@ import Citation from './src/screens/Citation';
 import Categories from './src/screens/Categories';
 import Result from './src/screens/Result';
 import SplashScreen from 'react-native-splash-screen';
-import Welcome from './src/screens/Welcome';
 import AboutPage from './src/screens/About';
-import Blank from './src/screens/NotFound';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Header from './src/components/Modal';
 import Contact from './src/screens/Contact';
 import ShareResults from './src/screens/ShareResults';
-import NotFound from './src/screens/NotFound';
+
 export default function App() {
   const [modalVisible, setModalVisible] = useState(false);
 
-  // {
-  //   console.log(questionsData?.questions[0]);
-  // }
   useEffect(() => {
     setTimeout(() => {
       SplashScreen.hide();
@@ -50,8 +45,10 @@ export default function App() {
           // headerMode: 'none', // Disable header animation
 
           headerRight: () => (
-            <View style={{marginEnd: 20}}>
-              <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <View style={{}}>
+              <TouchableOpacity
+                className="p-3 w-20 left-3  rounded-full justify-center items-center"
+                onPress={() => setModalVisible(true)}>
                 <Icon name="ellipsis-v" size={25} color="black" />
               </TouchableOpacity>
             </View>
@@ -65,7 +62,7 @@ export default function App() {
         <Stack.Screen name="Citation" component={Citation} />
         <Stack.Screen name="AboutPage" component={AboutPage} />
         <Stack.Screen name="Contact" component={Contact} />
-        <Stack.Screen name="NotFound" component={NotFound} />
+
         <Stack.Screen name="Start" component={Start} />
         <Stack.Screen name="Categories" component={Categories} />
         <Stack.Screen

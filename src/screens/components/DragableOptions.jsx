@@ -1,18 +1,10 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Animated,
-  PanResponder,
-} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import {View, Text, StyleSheet, Animated, PanResponder} from 'react-native';
+import React, {useEffect, useRef} from 'react';
 
 export default function DragableOptions({
   value,
   onDrop,
   Measurments,
-  reset,
   position,
   pastedOptions,
 }) {
@@ -21,49 +13,27 @@ export default function DragableOptions({
   const viewRef = useRef();
   const DropRef = useRef(Measurments);
   const ValueRef = useRef(value);
-  // const [isDropped, setIsDropped] = useState(false);
-
-  // useEffect(() => {
-  //   if (value) ValueRef.current = value;
-  // }, [value]);
-
-  // useEffect(() => {
-  //   DropRef.current = Measurments;
-  //   pan.setValue({x: 0, y: 0});
-  // }, [Measurments]);
-
-  // useEffect(() => {
-  //   pan.setValue(position);
-  // }, [position]);
-
-  // useEffect(() => {
-  //   if (reset) {
-  //     Animated.spring(pan, {
-  //       toValue: {x: 0, y: 0},
-  //       useNativeDriver: false,
-  //     }).start();
-  //     // setIsDropped(false);
-  //   }
-
-  //   // setIsReset(true);
-  //   // Update the reset state
-  // }, [reset]);
 
   useEffect(() => {
     if (value) ValueRef.current = value;
+  }, [value]);
+
+  useEffect(() => {
     DropRef.current = Measurments;
     pan.setValue({x: 0, y: 0});
-    pan.setValue(position);
-  }, [value, Measurments, position]);
+  }, [Measurments]);
+
+  useEffect(() => {
+    pan.setValue(position || {x: 0, y: 0});
+  }, [position]);
 
   // useEffect(() => {
-  //   if (reset) {
-  //     Animated.spring(pan, {
-  //       toValue: {x: 0, y: 0},
-  //       useNativeDriver: false,
-  //     }).start();
-  //   }
-  // }, [reset]);
+  //   if (value) ValueRef.current = value;
+  //   DropRef.current = Measurments;
+  //   pan.setValue({x: 0, y: 0});
+  //   pan.setValue(position);
+  // }, [value, Measurments, position]);
+
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -87,7 +57,13 @@ export default function DragableOptions({
         if (Drop.length) {
           // onDrop(gestureState.moveX, gestureState.moveY, value);
           const ind = DropRef.current.indexOf(Drop[0]);
-          onDrop(gestureState.moveX, gestureState.moveY, ValueRef.current, ind);
+
+          onDrop(
+            gestureState?.moveX || 0,
+            gestureState?.moveY,
+            ValueRef?.current,
+            ind,
+          );
           // setIsDropped(true);
         } else {
           Animated.spring(pan, {
@@ -109,11 +85,15 @@ export default function DragableOptions({
           styles.box,
           {
             zIndex: 1,
-            marginHorizontal: 10,
+            marginHorizontal: 3,
           },
         ]}>
         <View style={styles.triangle}></View>
-        <Text style={{color: 'white', fontSize: 14, marginHorizontal: 5}}>
+        <Text
+          style={{
+            color: 'white',
+            fontSize: 14,
+          }}>
           {value}
         </Text>
       </Animated.View>
@@ -128,14 +108,14 @@ const styles = StyleSheet.create({
     margin: 10,
     justifyContent: 'center',
     padding: 6,
-    borderRadius: 4,
+    borderRadius: 2,
   },
   triangle: {
     width: 0,
     height: 0,
-    borderLeftWidth: 8,
-    borderRightWidth: 8,
-    borderBottomWidth: 8,
+    borderLeftWidth: 6,
+    borderRightWidth: 6,
+    borderBottomWidth: 6,
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
     borderBottomColor: '#088DAA',

@@ -1,4 +1,10 @@
-import {View, Text, TouchableOpacity, BackHandler} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  BackHandler,
+  ScrollView,
+} from 'react-native';
 import React, {useEffect, useLayoutEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import CustomCircularProgress from '../components/ProgressBar';
@@ -26,7 +32,9 @@ export default function Result({route}) {
     return () => backHandler.remove();
   }, []);
   return (
-    <View className="flex-1 pb-5 bg-[#003644]">
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      className="flex-1 pb-5 bg-[#003644]">
       <View className="items-center my-8">
         <CustomCircularProgress
           size={250}
@@ -47,7 +55,7 @@ export default function Result({route}) {
         <View className="border border-gray-500 "></View>
         <Items totalQuestions={totalQuestions - totalScore} text="Wrong" />
       </View>
-      <View className="flex flex-row justify-center px-3 my-5 w-[100%]">
+      <View className="flex flex-row justify-center px-3 mb-10 mt-5 w-[100%]">
         <TouchableOpacity
           className="bg-yellow-400  p-2 w-40  rounded-md mr-4"
           onPress={() => navigation.navigate('Welcome')}>
@@ -58,12 +66,12 @@ export default function Result({route}) {
         <TouchableOpacity
           className="bg-green-500 p-2 w-40   rounded-md"
           onPress={() => navigation.navigate('ShareResults')}>
-          <Text className="text-white text-center text-base font-bold">
+          <Text className="text-black text-center text-base font-bold">
             EMAIL TO TUTOR
           </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 

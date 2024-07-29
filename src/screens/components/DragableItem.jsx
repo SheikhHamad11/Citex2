@@ -18,7 +18,7 @@ const DragableItem = ({value, onDrop, Measurments, reset, position}) => {
   }, [Measurments]);
 
   useEffect(() => {
-    pan.setValue(position);
+    pan.setValue(position || {x: 0, y: 0});
   }, [position]);
 
   useEffect(() => {
@@ -78,7 +78,7 @@ const DragableItem = ({value, onDrop, Measurments, reset, position}) => {
           styles.box,
           {
             zIndex: 1,
-            marginHorizontal: 10,
+            marginHorizontal: 8,
             alignItems: 'center',
             opacity: 0.8,
           },
@@ -115,8 +115,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FE5200',
-    borderRadius: 4,
-    // marginBottom: 10,
+    borderRadius: 3,
   },
   text: {
     color: 'white',
